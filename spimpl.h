@@ -41,16 +41,16 @@ namespace spimpl {
         template<class T>
         T *default_copy(T *src)
         {
-            static_assert(sizeof(T) > 0, "default_copy can not copy incomplete type");
-            static_assert(!std::is_void<T>::value, "default_copy can not copy incomplete type");
+            static_assert(sizeof(T) > 0, "default_copy cannot copy incomplete type");
+            static_assert(!std::is_void<T>::value, "default_copy cannot copy incomplete type");
             return new T(*src);
         }
 
         template<class T>
         void default_delete(T *p) SPIMPL_NOEXCEPT
         {
-            static_assert(sizeof(T) > 0, "default_delete can not delete incomplete type");
-            static_assert(!std::is_void<T>::value, "default_delete can not delete incomplete type");
+            static_assert(sizeof(T) > 0, "default_delete cannot delete incomplete type");
+            static_assert(!std::is_void<T>::value, "default_delete cannot delete incomplete type");
             delete p;
         }
 
