@@ -231,10 +231,10 @@ namespace spimpl {
 
         impl_ptr clone() const
         {
-            if (!ptr_)
-                return impl_ptr(nullptr, ptr_.get_deleter(), copier_);
-            else
-                return impl_ptr(copier_(ptr_.get()), ptr_.get_deleter(), copier_);
+            return impl_ptr(
+                ptr_ ? copier_(ptr_.get()) : nullptr,
+                ptr_.get_deleter(),
+                copier_);
         }
 
         typename std::remove_reference<T>::type & operator*() const { return *ptr_; }
