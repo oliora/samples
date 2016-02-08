@@ -87,6 +87,9 @@ namespace spimpl {
 
     public:
         using pointer = T*;
+        using const_pointer = typename std::add_const<T>::type *;
+        using reference = T&;
+        using const_reference = typename std::add_const<T>::type &;
         using element_type = T;
         using copier_type = typename std::decay<Copier>::type;
         using deleter_type = typename std::decay<Deleter>::type;
@@ -237,9 +240,14 @@ namespace spimpl {
                 copier_);
         }
 
-        typename std::remove_reference<T>::type & operator*() const { return *ptr_; }
-        pointer operator->() const SPIMPL_NOEXCEPT { return get(); }
-        pointer get() const SPIMPL_NOEXCEPT { return ptr_.get(); }
+        reference operator*() { return *ptr_; }
+        const_reference operator*() const { return *ptr_; }
+
+        pointer operator->() SPIMPL_NOEXCEPT { return get(); }
+        const_pointer operator->() const SPIMPL_NOEXCEPT { return get(); }
+
+        pointer get() SPIMPL_NOEXCEPT { return ptr_.get(); }
+        const_pointer get() const SPIMPL_NOEXCEPT { return ptr_.get(); }
 
         void swap(impl_ptr& u) SPIMPL_NOEXCEPT
         {
