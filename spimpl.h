@@ -35,6 +35,9 @@
 #define SPIMPL_CONSTEXPR
 #endif
 
+// define SPIMPL_HAS_AUTO_PTR to enable constructor and assignment operator that accept std::auto_ptr
+// TODO: auto detect std::auto_ptr support
+
 
 namespace spimpl {
     namespace details {
@@ -127,6 +130,7 @@ namespace spimpl {
         : ptr_(std::move(r.ptr_)), copier_(std::move(r.copier_)) {}
 #endif
 
+#ifdef SPIMPL_HAS_AUTO_PTR
         template<class U>
         impl_ptr(std::auto_ptr<U>&& u,
                  typename std::enable_if<
@@ -135,6 +139,7 @@ namespace spimpl {
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
         : ptr_(u.release(), &details::default_delete<T>), copier_(&details::default_copy<T>) {}
+#endif
 
         template<class U>
         impl_ptr(std::unique_ptr<U>&& u,
@@ -209,6 +214,7 @@ namespace spimpl {
 
         //
 
+#ifdef SPIMPL_HAS_AUTO_PTR
         template<class U>
         typename std::enable_if<
             std::is_convertible<U*, pointer>::value
@@ -218,6 +224,7 @@ namespace spimpl {
         {
             return operator=(impl_ptr(std::move(u)));
         }
+#endif
 
         template<class U>
         typename std::enable_if<
