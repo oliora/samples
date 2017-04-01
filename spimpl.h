@@ -1,12 +1,26 @@
 /*
+    ====================================================================
     A Smart Pointer to IMPLementation (i.e. Smart PIMPL or just SPIMPL).
- 
-    ********************************************************************
+    ====================================================================
+
+    Version: 1.1
+
+    Latest version:
+        https://github.com/oliora/samples/blob/master/spimpl.h
+    Rationale and description:
+        http://oliora.github.io/2015/12/29/pimpl-and-rule-of-zero.html
 
     Copyright (c) 2015 Andrey Upadyshev (oliora@gmail.com)
 
     Distributed under the Boost Software License, Version 1.0.
     See http://www.boost.org/LICENSE_1_0.txt
+
+    Changes history
+    ---------------
+    v1.1:
+        - auto_ptr support is disabled by default for C++17 compatibility
+    v1.0:
+        - Released
  */
 
 #ifndef SPIMPL_H_
