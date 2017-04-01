@@ -268,7 +268,6 @@ namespace spimpl {
         const typename std::remove_reference<copier_type>::type& get_copier() const SPIMPL_NOEXCEPT { return copier_; }
 
     private:
-        // TODO: use compressed_pair<unique_ptr_type, copier_type> instead
         unique_ptr_type ptr_;
         copier_type copier_;
     };
