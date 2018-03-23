@@ -258,10 +258,13 @@ namespace spimpl {
                 copier_);
         }
 
-        typename std::remove_reference<T>::type & operator*() const { return *ptr_; }
-        pointer operator->() const SPIMPL_NOEXCEPT { return get(); }
-        pointer get() const SPIMPL_NOEXCEPT { return ptr_.get(); }
-
+        typename std::remove_reference<T>::type & operator*() { return *ptr_; }
+        const typename std::remove_reference<T>::type & operator*() const { return *ptr_; }
+        pointer operator->() SPIMPL_NOEXCEPT { return get(); }
+        const pointer get() const SPIMPL_NOEXCEPT { return ptr_.get(); }
+        pointer operator->() SPIMPL_NOEXCEPT { return get(); }
+        const pointer get() const SPIMPL_NOEXCEPT { return ptr_.get(); }
+        
         void swap(impl_ptr& u) SPIMPL_NOEXCEPT
         {
             using std::swap;
