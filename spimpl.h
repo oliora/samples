@@ -378,20 +378,21 @@ namespace spimpl {
     template<class T, class Deleter = details::default_deleter_t<T>, class Copier = details::default_copier_t<T>>
     class impl_ptr : public unique_impl_ptr<T, Deleter>
     {
+        using base_type = unique_impl_ptr<T, Deleter>;
+        using dummy_t_ = typename base_type::dummy_t_;
     public:
-        using pointer = typename unique_impl_ptr<T, Deleter>::pointer;
-        using const_pointer = typename unique_impl_ptr<T, Deleter>::const_pointer;
-        using reference = typename unique_impl_ptr<T, Deleter>::reference;
-        using const_reference = typename unique_impl_ptr<T, Deleter>::const_reference;
-        using element_type = typename unique_impl_ptr<T, Deleter>::element_type;
-        using deleter_type = typename unique_impl_ptr<T, Deleter>::deleter_type;
-        using unique_ptr_type = typename unique_impl_ptr<T, Deleter>::unique_ptr_type;
+        using pointer = typename base_type::pointer;
+        using const_pointer = typename base_type::const_pointer;
+        using reference = typename base_type::reference;
+        using const_reference = typename base_type::const_reference;
+        using element_type = typename base_type::element_type;
+        using deleter_type = typename base_type::deleter_type;
+        using unique_ptr_type = typename base_type::unique_ptr_type;
         using copier_type = typename std::decay<Copier>::type;
         using is_default_manageable = details::is_default_manageable<T, deleter_type, copier_type>;
-        using dummy_t_ = typename unique_impl_ptr<T, Deleter>::dummy_t_;
 
         SPIMPL_CONSTEXPR impl_ptr() SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(nullptr, deleter_type{}), copier_(copier_type{}) {}
+        : base_type(nullptr, deleter_type{}), copier_(copier_type{}) {}
 
         SPIMPL_CONSTEXPR impl_ptr(std::nullptr_t) SPIMPL_NOEXCEPT
         : impl_ptr() {}
@@ -401,9 +402,9 @@ namespace spimpl {
                  typename std::enable_if<
                     std::is_convertible<D, deleter_type>::value
                         && std::is_convertible<C, copier_type>::value,
-                    typename unique_impl_ptr<T, Deleter>::dummy_t_
-                 >::type = typename unique_impl_ptr<T, Deleter>::dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(std::move(p), std::forward<D>(d)), copier_(std::forward<C>(c)) {}
+                    typename base_type::dummy_t_
+                 >::type = typename base_type::dummy_t_()) SPIMPL_NOEXCEPT
+        : base_type(std::move(p), std::forward<D>(d)), copier_(std::forward<C>(c)) {}
 
         template<class U>
         impl_ptr(U *u,
@@ -421,7 +422,7 @@ namespace spimpl {
         impl_ptr(impl_ptr&& r) SPIMPL_NOEXCEPT = default;
 #else
         impl_ptr(impl_ptr&& r) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(std::move(r.ptr_)), copier_(std::move(r.copier_)) {}
+        : base_type(std::move(r.ptr_)), copier_(std::move(r.copier_)) {}
 #endif
 
 #ifdef SPIMPL_HAS_AUTO_PTR
@@ -432,7 +433,7 @@ namespace spimpl {
                         && is_default_manageable::value,
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(u.release(), &details::default_delete<T>), copier_(&details::default_copy<T>) {}
+        : base_type(u.release(), &details::default_delete<T>), copier_(&details::default_copy<T>) {}
 #endif
 
         template<class U>
@@ -442,7 +443,7 @@ namespace spimpl {
                         && is_default_manageable::value,
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(u.release(), &details::default_delete<T>) {}
+        : base_type(u.release(), &details::default_delete<T>) {}
 
         template<class U, class D, class C>
         impl_ptr(std::unique_ptr<U, D>&& u, C&& c,
@@ -451,7 +452,7 @@ namespace spimpl {
                         && std::is_convertible<D, deleter_type>::value,
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(std::move(u)), copier_(std::forward<C>(c)) {}
+        : base_type(std::move(u)), copier_(std::forward<C>(c)) {}
 
         template<class U, class D, class C>
         impl_ptr(impl_ptr<U, D, C>&& u,
@@ -460,7 +461,7 @@ namespace spimpl {
                         && std::is_convertible<D, deleter_type>::value,
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr<T, Deleter>(std::move(u.ptr_)), copier_(std::move(u.copier_)) {}
+        : base_type(std::move(u.ptr_)), copier_(std::move(u.copier_)) {}
 
         impl_ptr& operator= (const impl_ptr& r)
         {
@@ -474,7 +475,7 @@ namespace spimpl {
         impl_ptr& operator= (impl_ptr&& r) SPIMPL_NOEXCEPT = default;
 #else
         impl_ptr& operator= (impl_ptr&& r) SPIMPL_NOEXCEPT {
-            unique_impl_ptr<T, Deleter>::ptr_ = std::move(r.ptr_);
+            base_type::ptr_ = std::move(r.ptr_);
             copier_ = std::move(r.copier_);
             return *this;
         }
@@ -523,7 +524,7 @@ namespace spimpl {
             impl_ptr&
         >::type operator= (impl_ptr<U, D, C>&& u) SPIMPL_NOEXCEPT
         {
-            unique_impl_ptr<T, Deleter>::ptr_ = std::move(u.ptr_);
+            base_type::ptr_ = std::move(u.ptr_);
             copier_ = std::move(u.copier_);
             return *this;
         }
@@ -531,15 +532,15 @@ namespace spimpl {
         void swap(impl_ptr& u) SPIMPL_NOEXCEPT
         {
             using std::swap;
-            unique_impl_ptr<T, Deleter>::ptr_.swap(u.ptr_);
+            base_type::ptr_.swap(u.ptr_);
             swap(copier_, u.copier_);
         }
 
         impl_ptr clone() const
         {
             return impl_ptr(
-                unique_impl_ptr<T, Deleter>::ptr_ ? copier_(unique_impl_ptr<T, Deleter>::ptr_.get()) : nullptr,
-                unique_impl_ptr<T, Deleter>::ptr_.get_deleter(),
+                base_type::ptr_ ? copier_(base_type::ptr_.get()) : nullptr,
+                base_type::ptr_.get_deleter(),
                 copier_);
         }
 
@@ -554,6 +555,12 @@ namespace spimpl {
     {
         return impl_ptr<T>(new T(std::forward<Args>(args)...), &details::default_delete<T>, &details::default_copy<T>);
     }
+
+    template<class T, class D, class C>
+    inline void swap(impl_ptr<T, D, C>& l,impl_ptr<T, D, C>& r) SPIMPL_NOEXCEPT
+    {
+        l.swap(r);
+    }
 }
 
 namespace std {
@@ -561,6 +568,18 @@ namespace std {
     struct hash<spimpl::unique_impl_ptr<T, D>>
     {
         using argument_type = spimpl::unique_impl_ptr<T, D> ;
+        using result_type = size_t;
+
+        result_type operator()(const argument_type& p) const SPIMPL_NOEXCEPT
+        {
+            return hash<typename argument_type::pointer>()(p.get());
+        }
+    };
+
+    template <class T, class D, class C>
+    struct hash<spimpl::impl_ptr<T, D, C>>
+    {
+        using argument_type = spimpl::impl_ptr<T, D, C> ;
         using result_type = size_t;
 
         result_type operator()(const argument_type& p) const SPIMPL_NOEXCEPT
