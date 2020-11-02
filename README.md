@@ -31,7 +31,7 @@ Implementation File:
 Copyable::Copyable(int x)
 : impl_(spimpl::make_impl<Impl>(x)) {}
 
-class Copyable::Impl {
+struct Copyable::Impl {
   Impl(int x): x(x) {}
 
   int x;
