@@ -135,7 +135,7 @@ namespace spimpl {
                         && is_default_manageable::value,
                     dummy_t_
                  >::type = dummy_t_()) SPIMPL_NOEXCEPT
-        : unique_impl_ptr(u, &details::default_delete<T>, &details::default_copy<T>) {}
+        : unique_impl_ptr(u, &details::default_delete<T>) {}
 
 #ifndef SPIMPL_NO_CPP11_DEFAULT_MOVE_SPEC_FUNC
         unique_impl_ptr(unique_impl_ptr&& r) SPIMPL_NOEXCEPT = default;
