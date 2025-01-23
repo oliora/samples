@@ -259,7 +259,7 @@ namespace spimpl {
         return l.get() == r.get();
     }
 
-    template <class T1, class D1, class C1, class T2, class D2>
+    template <class T1, class D1, class T2, class D2>
     inline bool operator!=(const unique_impl_ptr<T1, D1>& l, const unique_impl_ptr<T2, D2>& r)
     {
         return !(l == r);
