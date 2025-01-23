@@ -572,7 +572,7 @@ namespace std {
 
         result_type operator()(const argument_type& p) const SPIMPL_NOEXCEPT
         {
-            return hash<typename argument_type::pointer>()(p.get());
+            return hash<typename argument_type::const_pointer>()(p.get());
         }
     };
 
@@ -584,7 +584,7 @@ namespace std {
 
         result_type operator()(const argument_type& p) const SPIMPL_NOEXCEPT
         {
-            return hash<typename argument_type::pointer>()(p.get());
+            return hash<typename argument_type::const_pointer>()(p.get());
         }
     };
 }
