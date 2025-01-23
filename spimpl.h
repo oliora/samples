@@ -268,8 +268,8 @@ namespace spimpl {
     template <class T1, class D1, class T2, class D2>
     inline bool operator< (const unique_impl_ptr<T1, D1>& l, const unique_impl_ptr<T2, D2>& r)
     {
-        using P1 = typename unique_impl_ptr<T1, D1>::pointer;
-        using P2 = typename unique_impl_ptr<T2, D2>::pointer;
+        using P1 = typename unique_impl_ptr<T1, D1>::const_pointer;
+        using P2 = typename unique_impl_ptr<T2, D2>::const_pointer;
         using CT = typename std::common_type<P1, P2>::type;
         return std::less<CT>()(l.get(), r.get());
     }
@@ -319,14 +319,14 @@ namespace spimpl {
     template <class T, class D>
     inline bool operator< (const unique_impl_ptr<T, D>& l, std::nullptr_t)
     {
-        using P = typename unique_impl_ptr<T, D>::pointer;
+        using P = typename unique_impl_ptr<T, D>::const_pointer;
         return std::less<P>()(l.get(), nullptr);
     }
 
     template <class T, class D>
     inline bool operator< (std::nullptr_t, const unique_impl_ptr<T, D>& p)
     {
-        using P = typename unique_impl_ptr<T, D>::pointer;
+        using P = typename unique_impl_ptr<T, D>::const_pointer;
         return std::less<P>()(nullptr, p.get());
     }
 
